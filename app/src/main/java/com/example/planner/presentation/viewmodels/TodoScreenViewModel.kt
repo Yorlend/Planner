@@ -38,4 +38,11 @@ class TodoScreenViewModel @Inject constructor(
             }
         }
     }
+
+    fun logout() {
+        viewModelScope.launch {
+            authInteractor.logout()
+        }
+        user = null
+    }
 }

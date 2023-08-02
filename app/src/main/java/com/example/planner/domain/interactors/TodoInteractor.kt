@@ -24,5 +24,5 @@ class TodoInteractor @Inject constructor(
 
     suspend fun update(todoModel: TodoModel) = todoRepository.update(todoModel)
 
-    suspend fun delete(todoModel: TodoModel): TodoModel = todoRepository.delete(todoModel.id!!)
+    suspend fun delete(todoModel: TodoModel) = todoRepository.delete(todoModel)
 }

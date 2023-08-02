@@ -8,10 +8,6 @@ interface TodoRepository {
     fun getFlow(limit: Int, skip: Int): Flow<List<TodoModel>>
     suspend fun get(limit: Int, skip: Int): List<TodoModel>
 
-    suspend fun get(id: Int): TodoModel
-
-    suspend fun getRandom(): TodoModel
-
     fun getFlowForUser(userId: Int, limit: Int, skip: Int): Flow<List<TodoModel>>
     suspend fun getForUser(userId: Int, limit: Int, skip: Int): List<TodoModel>
 
@@ -19,5 +15,5 @@ interface TodoRepository {
 
     suspend fun update(todoModel: TodoModel)
 
-    suspend fun delete(id: Int): TodoModel
+    suspend fun delete(todoModel: TodoModel)
 }

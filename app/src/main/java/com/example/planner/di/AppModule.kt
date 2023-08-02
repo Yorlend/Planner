@@ -1,5 +1,11 @@
 package com.example.planner.di
 
+import android.content.Context
+import androidx.room.Room
+import com.example.planner.data.db.AppDatabase
+import com.example.planner.data.db.SessionManager
+import com.example.planner.data.repositories.AuthRepositoryImpl
+import com.example.planner.data.repositories.TodoRepositoryImpl
 import com.example.planner.domain.interactors.AuthInteractor
 import com.example.planner.domain.interactors.TodoInteractor
 import com.example.planner.domain.repositories.AuthRepository
@@ -9,6 +15,7 @@ import com.example.planner.presentation.mock.MockTodoRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -18,14 +25,24 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideMockTodoRepo(): TodoRepository {
-        return MockTodoRepository()
+    fun provideAppDatabase(
+        @ApplicationContext app: Context
+    ) = Room.databaseBuilder(
+        app,
+        AppDatabase::class.java,
+        "plannerLocalDB"
+    ).build()
+
+    @Provides
+    @Singleton
+    fun provideTodoRepo(db: AppDatabase): TodoRepository {
+        return TodoRepositoryImpl(db)
     }
 
     @Provides
     @Singleton
-    fun provideMockAuthRepo(): AuthRepository {
-        return MockAuthRepository()
+    fun provideAuthRepo(db: AppDatabase, sessionManager: SessionManager): AuthRepository {
+        return AuthRepositoryImpl(db, sessionManager)
     }
 
     @Provides
@@ -39,4 +56,10 @@ class AppModule {
     fun provideAuthInteractor(repo: AuthRepository): AuthInteractor {
         return AuthInteractor(repo)
     }
+
+    @Provides
+    @Singleton
+    fun provideSessionManager(
+        @ApplicationContext app: Context
+    ) = SessionManager(app)
 }

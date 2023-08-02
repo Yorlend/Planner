@@ -1,5 +1,6 @@
 package com.example.planner.presentation.screens
 
+import android.provider.CalendarContract.Colors
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -50,7 +52,9 @@ fun LoginScreen(navController: NavController) {
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(20.dp),
-            onClick = {},
+            onClick = {
+              navController.navigate(Routes.Register.route)
+            },
             style = TextStyle(
                 fontSize = 14.sp,
                 fontFamily = FontFamily.Default,
@@ -66,17 +70,22 @@ fun LoginScreen(navController: NavController) {
                 navController.navigate(Routes.Todo.route)
             }
         }
-        else -> {
-            LoginForm { username, password ->
+        is LoginViewModel.LoginState.Error -> {
+            LoginForm({ username, password ->
                 viewModel.login(username, password)
-            }
+            }, false)
+        }
+        else -> {
+            LoginForm({ username, password ->
+                viewModel.login(username, password)
+            })
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun LoginForm(onLogin: (String, String) -> Unit) {
+private fun LoginForm(onLogin: (String, String) -> Unit, success: Boolean = true) {
     var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
 
@@ -87,6 +96,8 @@ private fun LoginForm(onLogin: (String, String) -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
+        Text(text = "Log in:")
+        Spacer(modifier = Modifier.height(5.dp))
         OutlinedTextField(
             value = username,
             label = { Text(text = "Username") },
@@ -101,6 +112,10 @@ private fun LoginForm(onLogin: (String, String) -> Unit) {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             onValueChange = { password = it },
         )
+        if (!success) {
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(text = "User Not Found. Try Again or Sign Up!", color = Color.Yellow)
+        }
         Spacer(modifier = Modifier.height(10.dp))
         Button(onClick = {
             onLogin(username, password)

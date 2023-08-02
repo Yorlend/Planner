@@ -1,7 +1,11 @@
 package com.example.planner.data.entities
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "users")
 data class UserEntity(
     val login: String,
     val password: String,
-    val id: Int?,
+    @PrimaryKey(autoGenerate = true) val id: Int? = null,
 )

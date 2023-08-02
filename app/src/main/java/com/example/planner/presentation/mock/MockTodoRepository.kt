@@ -38,18 +38,6 @@ class MockTodoRepository : TodoRepository {
             .toMutableList()
     }
 
-    override suspend fun get(id: Int): TodoModel {
-        return try {
-            todos[id]
-        } catch (exception: Exception) {
-            return TodoModel("Todo Not Found", 0)
-        }
-    }
-
-    override suspend fun getRandom(): TodoModel {
-        return todos.random()
-    }
-
     override fun getFlowForUser(userId: Int, limit: Int, skip: Int): Flow<List<TodoModel>> {
         return flowOf(
             todos.filter {
@@ -90,23 +78,8 @@ class MockTodoRepository : TodoRepository {
         }
     }
 
-    override suspend fun delete(id: Int): TodoModel {
-        val todo = todos.find {
-            it.id == id
-        }
-        todo?.let {
-            return TodoModel(
-                todo = todo.todo,
-                user = todo.user,
-                id = todo.id,
-                isDeleted = true,
-                completed = todo.completed,
-                )
-        }
-        return TodoModel(
-            "NotFound",
-            0,
-        )
+    override suspend fun delete(todo: TodoModel) {
+        todos.remove(todo)
     }
 
 }
