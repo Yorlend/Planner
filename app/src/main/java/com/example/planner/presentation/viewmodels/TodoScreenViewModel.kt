@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.planner.domain.interactors.AuthInteractor
 import com.example.planner.domain.interactors.TodoInteractor
+import com.example.planner.domain.models.TodoModel
 import com.example.planner.presentation.viewdata.TodoViewData
 import com.example.planner.presentation.viewdata.UserViewData
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,6 +37,12 @@ class TodoScreenViewModel @Inject constructor(
                     TodoViewData.fromModel(it)
                 }
             }
+        }
+    }
+
+    fun add(todo: String) {
+        viewModelScope.launch {
+            todoInteractor.add(TodoModel(todo, user!!))
         }
     }
 

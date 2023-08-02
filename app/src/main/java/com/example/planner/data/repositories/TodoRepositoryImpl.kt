@@ -17,7 +17,7 @@ class TodoRepositoryImpl @Inject constructor(
     private val db: AppDatabase,
 ) : TodoRepository {
     override fun getFlow(limit: Int, skip: Int): Flow<List<TodoModel>> {
-        val todos = db.todoDAO().getAllFlow(limit, skip)
+        val todos = db.todoDAO().getAllFlow()
 
         return todos.map { list ->
             list.map {
@@ -27,7 +27,7 @@ class TodoRepositoryImpl @Inject constructor(
     }
 
     override suspend fun get(limit: Int, skip: Int): List<TodoModel> = withContext(Dispatchers.IO) {
-        val todos = db.todoDAO().getAll(limit, skip)
+        val todos = db.todoDAO().getAll()
 
         todos.map { item ->
             TodoMapper.toModel(item)
@@ -35,7 +35,7 @@ class TodoRepositoryImpl @Inject constructor(
     }
 
     override fun getFlowForUser(userId: Int, limit: Int, skip: Int): Flow<List<TodoModel>> {
-        val todos = db.todoDAO().getFlowForUser(userId, limit, skip)
+        val todos = db.todoDAO().getFlowForUser(userId)
 
         return todos.map { list ->
             list.map {
@@ -46,7 +46,7 @@ class TodoRepositoryImpl @Inject constructor(
 
     override suspend fun getForUser(userId: Int, limit: Int, skip: Int): List<TodoModel> =
         withContext(Dispatchers.IO) {
-            val todos = db.todoDAO().getForUser(userId, limit, skip)
+            val todos = db.todoDAO().getForUser(userId)
 
             todos.map { item ->
                 TodoMapper.toModel(item)
