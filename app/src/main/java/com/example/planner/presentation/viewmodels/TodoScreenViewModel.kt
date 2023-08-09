@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -43,6 +44,25 @@ class TodoScreenViewModel @Inject constructor(
     fun add(todo: String) {
         viewModelScope.launch {
             todoInteractor.add(TodoModel(todo, user!!))
+        }
+    }
+
+    fun toggle(todo: TodoViewData) {
+        val newViewModel = TodoModel(
+            id = todo.id,
+            todo = todo.todo,
+            completed = !todo.completed.toModel(),
+            user = todo.user,
+        )
+
+        viewModelScope.launch {
+            todoInteractor.update(newViewModel)
+        }
+    }
+
+    fun remove(todo: TodoViewData) {
+        viewModelScope.launch {
+            todoInteractor.delete(todo.toModel())
         }
     }
 
